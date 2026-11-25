@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>JobFlow</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f7fb;color:#101828;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select{font:inherit}button{cursor:pointer}.app{min-height:100vh}.top{background:#101828;color:white;padding:18px 18px 16px;position:sticky;top:0;z-index:2}.brand{font-size:24px;font-weight:900}.brand span{color:#60a5fa}.toprow{display:flex;justify-content:space-between;align-items:center}.sub{color:#98a2b3;font-size:13px;margin-top:3px}.main{padding:18px;max-width:900px;margin:auto;padding-bottom:95px}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.card{background:white;border:1px solid #e4e7ec;border-radius:16px;padding:16px;box-shadow:0 8px 25px #1018280b}.label{font-size:12px;color:#667085;font-weight:800}.num{font-size:25px;font-weight:900;margin-top:5px}.section{margin-top:18px}.sectionhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.sectionhead h2{font-size:18px;margin:0}.primary{border:0;background:#2563eb;color:white;border-radius:10px;padding:10px 14px;font-weight:800}.job{margin-bottom:10px}.jobtop{display:flex;justify-content:space-between;gap:10px}.jobname{font-weight:900}.muted{color:#667085;font-size:13px}.badge{display:inline-block;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:900;text-transform:capitalize}.booked{background:#eff6ff;color:#1d4ed8}.progress{background:#fff7ed;color:#c2410c}.completed{background:#ecfdf3;color:#027a48}.cancelled{background:#fef3f2;color:#b42318}.price{font-weight:900}.bottom{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #e4e7ec;display:grid;grid-template-columns:repeat(3,1fr);padding:8px 8px calc(8px + env(safe-area-inset-bottom));z-index:3}.navbtn{border:0;background:white;color:#667085;padding:7px;font-weight:800}.navbtn.active{color:#2563eb}.fab{position:fixed;right:20px;bottom:78px;border:0;background:#2563eb;color:white;width:55px;height:55px;border-radius:50%;font-size:28px;box-shadow:0 10px 25px #2563eb55;z-index:4}.modal{position:fixed;inset:0;background:#0008;display:none;align-items:flex-end;z-index:10}.modal.show{display:flex}.sheet{background:white;width:100%;max-height:90vh;overflow:auto;border-radius:22px 22px 0 0;padding:20px}.field{display:grid;gap:6px;margin:12px 0}.field label{font-size:12px;font-weight:900}.field input,.field select{border:1px solid #d0d5dd;border-radius:10px;padding:12px;width:100%}.actions{display:flex;gap:10px;margin-top:16px}.secondary{border:1px solid #d0d5dd;background:white;border-radius:10px;padding:10px 14px;font-weight:800}.empty{text-align:center;padding:30px 10px;color:#667085}.toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:#101828;color:white;padding:10px 15px;border-radius:999px;display:none;z-index:20}.toast.show{display:block}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top"><div class="toprow"><div><div class="brand">Job<span>Flow</span></div><div class="sub">Your local service business, organized.</div></div><button class="primary" onclick="openJob()">+ Job</button></div></header>
+<main class="main">
+<section id="dashboard">
+<div class="stats">
+<div class="card"><div class="label">REVENUE</div><div class="num" id="revenue">$0</div></div>
+<div class="card"><div class="label">OPEN JOBS</div><div class="num" id="openJobs">0</div></div>
+<div class="card"><div class="label">COMPLETED</div><div class="num" id="completed">0</div></div>
+<div class="card"><div class="label">CUSTOMERS</div><div class="num" id="customers">0</div></div>
+</div>
+<div class="section"><div class="sectionhead"><h2>Today's jobs</h2><button class="secondary" onclick="openJob()">Add job</button></div><div id="jobList"></div></div>
+</section>
+<section id="customersPage" style="display:none">
+<div class="sectionhead"><h2>Customers</h2><button class="primary" onclick="openJob()">+ Job</button></div>
+<div id="customerList"></div>
+</section>
+<section id="morePage" style="display:none">
+<div class="card"><h2>JobFlow</h2><p class="muted">This phone-ready MVP stores your jobs on this device.</p><p><b>Next:</b> cloud accounts, employee access, online booking, payments, texting and route optimization.</p><button class="primary" onclick="exportData()">Export data</button></div>
+</section>
+</main>
+<button class="fab" onclick="openJob()">+</button>
+<nav class="bottom">
+<button class="navbtn active" onclick="showPage('dashboard',this)">Dashboard</button>
+<button class="navbtn" onclick="showPage('customersPage',this)">Customers</button>
+<button class="navbtn" onclick="showPage('morePage',this)">More</button>
+</nav>
+<div class="modal" id="modal"><div class="sheet"><div class="sectionhead"><h2>New Job</h2><button class="secondary" onclick="closeJob()">Close</button></div>
+<div class="field"><label>CUSTOMER NAME</label><input id="name" placeholder="John Smith"></div>
+<div class="field"><label>PHONE</label><input id="phone" placeholder="562-555-1234" type="tel"></div>
+<div class="field"><label>SERVICE</label><input id="service" placeholder="Sandbag delivery"></div>
+<div class="field"><label>PRICE</label><input id="price" placeholder="75" type="number" min="0"></div>
+<div class="field"><label>DATE</label><input id="date" type="date"></div>
+<div class="field"><label>STATUS</label><select id="status"><option value="booked">Booked</option><option value="in_progress">In progress</option><option value="completed">Completed</option></select></div>
+<div class="field"><label>NOTES</label><input id="notes" placeholder="Gate code, quantity, etc."></div>
+<div class="actions"><button class="primary" style="flex:1" onclick="saveJob()">Save job</button></div>
+</div></div>
+<div class="toast" id="toast"></div>
+<script>
+const KEY="jobflow_jobs_v1";
+let jobs=JSON.parse(localStorage.getItem(KEY)||"[]");
+function money(n){return "$"+Number(n||0).toLocaleString()}
+function render(){
+ const rev=jobs.filter(j=>j.status==="completed").reduce((a,j)=>a+Number(j.price||0),0);
+ document.getElementById("revenue").textContent=money(rev);
+ document.getElementById("openJobs").textContent=jobs.filter(j=>j.status==="booked"||j.status==="in_progress").length;
+ document.getElementById("completed").textContent=jobs.filter(j=>j.status==="completed").length;
+ document.getElementById("customers").textContent=new Set(jobs.map(j=>j.phone||j.name)).size;
+ const list=document.getElementById("jobList");
+ if(!jobs.length){list.innerHTML='<div class="card empty">No jobs yet. Tap + Job to create your first one.</div>'}
+ else {list.innerHTML=jobs.slice().sort((a,b)=>(a.date||"").localeCompare(b.date||"")).map(j=>`<div class="card job"><div class="jobtop"><div><div class="jobname">${esc(j.name)}</div><div class="muted">${esc(j.service)} · ${j.date||"No date"}</div></div><div class="price">${money(j.price)}</div></div><div style="margin-top:10px"><span class="badge ${j.status==='completed'?'completed':j.status==='in_progress'?'progress':'booked'}">${j.status.replace("_"," ")}</span></div></div>`).join("")}
+ renderCustomers();
+}
+function renderCustomers(){
+ const map={}; jobs.forEach(j=>{let k=j.phone||j.name;if(!map[k])map[k]={...j,count:0,total:0};map[k].count++;map[k].total+=Number(j.price||0)});
+ const el=document.getElementById("customerList"); const arr=Object.values(map);
+ el.innerHTML=arr.length?arr.map(c=>`<div class="card job"><div class="jobtop"><div><div class="jobname">${esc(c.name)}</div><div class="muted">${esc(c.phone||"No phone")} · ${c.count} job(s)</div></div><div class="price">${money(c.total)}</div></div></div>`).join(""):'<div class="card empty">No customers yet.</div>';
+}
+function esc(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function openJob(){document.getElementById("modal").classList.add("show");document.getElementById("date").value=new Date().toISOString().slice(0,10)}
+function closeJob(){document.getElementById("modal").classList.remove("show")}
+function saveJob(){
+ const j={id:Date.now(),name:document.getElementById("name").value.trim(),phone:document.getElementById("phone").value.trim(),service:document.getElementById("service").value.trim(),price:document.getElementById("price").value||0,date:document.getElementById("date").value,status:document.getElementById("status").value,notes:document.getElementById("notes").value.trim()};
+ if(!j.name||!j.service){toast("Add a customer and service");return}
+ jobs.push(j);localStorage.setItem(KEY,JSON.stringify(jobs));closeJob();document.querySelectorAll("#modal input").forEach(x=>x.value="");render();showPage("dashboard",document.querySelector(".navbtn"));toast("Job saved")}
+function showPage(id,btn){["dashboard","customersPage","morePage"].forEach(x=>document.getElementById(x).style.display=x===id?"block":"none");document.querySelectorAll(".navbtn").forEach(x=>x.classList.remove("active"));if(btn)btn.classList.add("active")}
+function toast(t){let x=document.getElementById("toast");x.textContent=t;x.classList.add("show");setTimeout(()=>x.classList.remove("show"),1800)}
+function exportData(){const b=new Blob([JSON.stringify(jobs,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="jobflow-data.json";a.click()}
+render();
+</script>
+</body>
+</html>
